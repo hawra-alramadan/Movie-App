@@ -13,7 +13,7 @@ const MovieCard = ({ movie }) => {
   };
 
   return (
-    <div onClick={handleClick} className="movie cursor-pointer relative">
+    <div onClick={handleClick} className="movie cursor-pointer relative m-4">
       {/* Movie Poster */}
       <img src={posterUrl} alt={title} className="w-full" />
 
@@ -23,8 +23,10 @@ const MovieCard = ({ movie }) => {
       </div>
 
       {/* Overlay */}
-      <div className="movie-over">
-        <p className="text-sm text-white">
+      <div className="movie-over p-3">
+        {/* Overview Title */}
+        <h6 className="text-lg text-black mb-2 text-center">Overview</h6>
+        <p className="text-sm text-black text-center">
           {overview ? overview.slice(0, 150) + "..." : "No overview available"}
         </p>
 
