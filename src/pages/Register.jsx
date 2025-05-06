@@ -10,7 +10,6 @@ const Register = () => {
     password: "",
     confirmPassword: "",
     displayName: "",
-    termsAccepted: false,
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,10 +17,10 @@ const Register = () => {
   const { signUp, signUpProvider } = useAuth();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -48,7 +47,9 @@ const Register = () => {
       return false;
     }
     if (!/[!@#$%^&*]/.test(formData.password)) {
-      setError("Password must contain at least one special character (!@#$%^&*)");
+      setError(
+        "Password must contain at least one special character (!@#$%^&*)"
+      );
       return false;
     }
     if (formData.password !== formData.confirmPassword) {
@@ -57,10 +58,6 @@ const Register = () => {
     }
     if (formData.displayName.length < 3) {
       setError("Display name must be at least 3 characters long");
-      return false;
-    }
-    if (!formData.termsAccepted) {
-      setError("You must accept the terms and conditions");
       return false;
     }
     return true;
@@ -98,7 +95,9 @@ const Register = () => {
 
   return (
     <div className="overflow-hidden flex-1 h-screen justify-center items-center bg-white dark:bg-gray-dark-main transition-colors duration-300">
-      <div className="form-container mt-[5vh] w-[380px] h-[580px]">
+      <div className="form-container mt-[5vh] w-[380px] h-[530px]">
+        {" "}
+        {/* Reduced height */}
         <form onSubmit={handleSubmit}>
           <h2 className="text-red-main text-2xl font-[500] text-center tracking-[0.1em] mb-3">
             Sign Up
@@ -113,7 +112,8 @@ const Register = () => {
               placeholder="Display Name"
               value={formData.displayName}
               onChange={handleChange}
-              className="peer"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              required
             />
           </div>
 
@@ -124,7 +124,8 @@ const Register = () => {
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="peer"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              required
             />
           </div>
 
@@ -135,7 +136,8 @@ const Register = () => {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="peer"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              required
             />
           </div>
 
@@ -146,28 +148,15 @@ const Register = () => {
               placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="peer"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              required
             />
-          </div>
-
-          <div className="mb-4">
-            <input
-              type="checkbox"
-              name="termsAccepted"
-              id="termsAccepted"
-              checked={formData.termsAccepted}
-              onChange={handleChange}
-              className="mr-2 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-            />
-            <label htmlFor="termsAccepted" className="text-sm text-gray-600 dark:text-gray-300">
-              I agree to the terms and conditions
-            </label>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="btn-danger"
+            className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300 disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Create Account"}
           </button>
