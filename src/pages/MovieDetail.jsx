@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { toastErrorNotify } from "../helper/ToastNotify";
+import { Link } from "react-router-dom";
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -9,6 +10,10 @@ const MovieDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const baseImageUrl = "https://image.tmdb.org/t/p/w1280";
+  const defaultImage =
+    "https://images.unsplash.com/photo-1581905764498-f1b60bae941a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80";
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -43,7 +48,6 @@ const MovieDetail = () => {
         if (trailer) {
           setTrailerKey(trailer.key);
         }
-
       } catch (err) {
         setError(err.message);
         toastErrorNotify(err.message);
@@ -78,17 +82,14 @@ const MovieDetail = () => {
   if (!movie) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600 dark:text-gray-300 text-xl transition-colors duration-300">
-          Movie not found
-        </p>
+        <p className="text-2xl text-red-500">Movie not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-8 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Movie Title */}
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
           {movie.title}
@@ -96,8 +97,8 @@ const MovieDetail = () => {
 
         {/* Trailer */}
         {trailerKey && (
-          <div className={`${isFullscreen ? 'fixed inset-0 z-50' : ''} mb-12`}>
-            <div className="relative" style={{ paddingTop: '56.25%' }}>
+          <div className={`${isFullscreen ? "fixed inset-0 z-50" : ""} mb-12`}>
+            <div className="relative" style={{ paddingTop: "56.25%" }}>
               <iframe
                 className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
                 src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=1`}
@@ -110,67 +111,56 @@ const MovieDetail = () => {
                 onClick={toggleFullscreen}
                 className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg hover:bg-opacity-75 transition-all duration-300"
               >
-                {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
               </button>
             </div>
           </div>
         )}
 
-        {/* Movie Details */}
-        <div className="flex flex-col md:flex-row">
-          {/* Poster */}
-          <div className="md:w-1/3">
+        {/* Movie Details Layout */}
+        <div className="flex justify-center px-10 mt-6">
+          <div className="flex flex-col lg:flex-row w-2/3 rounded-lg shadow-lg bg-gray-100 dark:bg-gray-800">
+            {/* Poster Image */}
             <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-              className="w-full rounded-lg"
+              className="lg:w-1/3 h-96 lg:h-[600px] object-cover rounded-t-lg md:rounded-none md:rounded-l-lg"
+              src={
+                movie.poster_path
+                  ? baseImageUrl + movie.poster_path
+                  : defaultImage
+              }
+              alt="poster"
             />
-          </div>
-
-          {/* Info */}
-          <div className="p-8 md:w-2/3">
-            <div className="flex items-center mb-4">
-              <span className="text-yellow-500 mr-2">★</span>
-              <span className="text-gray-800 dark:text-white">
-                {movie.vote_average.toFixed(1)} / 10
-              </span>
-              <span className="mx-2 text-gray-400">•</span>
-              <span className="text-gray-800 dark:text-white">
-                {movie.release_date.split("-")[0]}
-              </span>
-              <span className="mx-2 text-gray-400">•</span>
-              <span className="text-gray-800 dark:text-white">
-                {movie.runtime} minutes
-              </span>
-            </div>
-
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-                Overview
-              </h2>
-              <p className="text-gray-700 dark:text-gray-300">
-                {movie.overview}
-              </p>
-            </div>
-
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-                Genres
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {movie.genres.map((genre) => (
-                  <span
-                    key={genre.id}
-                    className="px-3 py-1 bg-orange-500 bg-opacity-10 text-orange-600 rounded-full text-sm"
-                  >
-                    {genre.name}
-                  </span>
-                ))}
+            <div className="p-6 flex flex-col justify-between">
+              <div>
+                <h5 className="text-xl font-medium mb-2 text-black dark:text-white">
+                  Overview
+                </h5>
+                <p className="text-base mb-4 text-black dark:text-white">
+                  {movie.overview}
+                </p>
               </div>
+              <ul className="rounded-lg border border-gray-400 text-black dark:text-white">
+                <li className="px-6 py-2 border-b border-gray-400">
+                  Release Date: {movie.release_date}
+                </li>
+                <li className="px-6 py-2 border-b border-gray-400">
+                  Rate: {movie.vote_average?.toFixed(1)}
+                </li>
+                <li className="px-6 py-2 border-b border-gray-400">
+                  Total Vote: {movie.vote_count}
+                </li>
+                <li className="px-6 py-2">
+                  <Link
+                    to={-1}
+                    className="text-blue-600 hover:text-blue-700 transition"
+                  >
+                    Go Back
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
