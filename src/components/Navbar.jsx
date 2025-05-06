@@ -2,13 +2,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toastSuccessNotify } from "../helper/ToastNotify";
-import { Menu, MenuButton, MenuItems, MenuItem, Transition } from "@headlessui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuItems,
+  MenuItem,
+  Transition,
+} from "@headlessui/react";
 import Switch from "./Switch";
 import avatar from "../assets/avatar.png"; // Import your avatar image
 
 const Navbar = () => {
   const { currentUser, logOut } = useAuth();
- 
+
   const handleLogout = async () => {
     try {
       await logOut();
@@ -22,16 +28,14 @@ const Navbar = () => {
     <nav className="bg-neutral-100 dark:bg-gray-900 py-3 dark:text-white w-full">
       <div className="flex w-full flex-wrap items-center justify-between px-6">
         {/* App Logo/Title - with minimal padding */}
-        <Link 
-          to="/" 
-          className="pr-2 text-2xl font-semibold"        >
+        <Link to="/" className="pr-2 text-2xl font-semibold">
           React Movie App
         </Link>
 
         {/* Right side - Switch and Profile/Auth */}
         <div className="relative flex items-center">
           <Switch />
-          
+
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center focus:outline-none">
               <img
@@ -42,8 +46,14 @@ const Navbar = () => {
                   e.target.src = avatar;
                 }}
               />
+              {/* Show user's name next to the avatar */}
+              {currentUser && (
+                <span className="ml-2 text-sm text-gray-700 dark:text-gray-200">
+                  {currentUser.displayName || "User"}
+                </span>
+              )}
             </MenuButton>
-            
+
             <Transition
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"
